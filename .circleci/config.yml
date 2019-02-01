@@ -15,9 +15,6 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
     - checkout
-    - run:
-        name: Copy Android SDK Licenses
-        command: cp -r license/. $ANDROID_HOME/licenses
     - restore_cache:
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
