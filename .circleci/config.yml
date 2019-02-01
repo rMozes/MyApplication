@@ -30,11 +30,21 @@ jobs:
     - store_artifacts:
         path: app/build/outputs/apk/debug
         destination: apk
-    - run: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/client-secret.json
-    - run: sudo gcloud config set project testlab-4372f
-    - run: sudo gcloud auth activate-service-account firebase-adminsdk-ii296@testlab-4372f.iam.gserviceaccount.com --key-file ${HOME}/client-secret.json
-    - run: sudo gcloud config set account firebase-adminsdk-ii296@testlab-4372f.iam.gserviceaccount.com
-    - run: sudo gcloud firebase test android run --type robo --app app/build/outputs/apk/debug/app-debug.apk --device model=Nexus9,version=25
+    - run:
+        name: Decode firebase client-secret.json
+        command: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/client-secret.json
+    - run:
+        name: Set firebase project
+        command: sudo gcloud config set project testlab-4372f
+    - run:
+        name: Auth firebase service account
+        command: sudo gcloud auth activate-service-account firebase-adminsdk-ii296@testlab-4372f.iam.gserviceaccount.com --key-file ${HOME}/client-secret.json
+    - run:
+        name: Set firebase account
+        command: sudo gcloud config set account firebase-adminsdk-ii296@testlab-4372f.iam.gserviceaccount.com
+    - run:
+        name: Starting robo test
+        command: sudo gcloud firebase test android run --type robo --app app/build/outputs/apk/debug/app-debug.apk --device model=Nexus9,version=25
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
