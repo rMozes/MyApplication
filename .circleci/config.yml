@@ -28,7 +28,7 @@ jobs:
         name: Run Staging
         command: ./gradlew assembleDebug
     - store_artifacts:
-        path: app/build/outputs/apk/staging/release
+        path: app/build/outputs/apk/debug
         destination: apk
 #    - run: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/client-secret.json
     - run:
