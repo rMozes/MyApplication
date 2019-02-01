@@ -34,7 +34,7 @@ jobs:
     - run: sudo gcloud config set project testlab-4372f
     - run: sudo gcloud auth activate-service-account firebase-adminsdk-ii296@testlab-4372f.iam.gserviceaccount.com --key-file ${HOME}/client-secret.json
     - run: sudo gcloud config set account firebase-adminsdk-ii296@testlab-4372f.iam.gserviceaccount.com
-    - run: sudo gcloud firebase test android run --type robot --app app/build/outputs/apk/debug/app-debug.apk --device model=Nexus9,version=25
+    - run: sudo gcloud firebase test android run --type robo --app app/build/outputs/apk/debug/app-debug.apk --device model=Nexus9,version=25
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
