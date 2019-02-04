@@ -47,7 +47,7 @@ jobs:
         command: echo $ROBO_TEST | base64 --decode > ${HOME}/robo-script.json
     - run:
         name: Starting robo test
-        command: sudo gcloud beta firebase test android run --type robo --app app/build/outputs/apk/debug/app-debug.apk --device model=Nexus9,version=25 model=Nexus6,version=25 --robo-script ${HOME}/robo-script.json
+        command: sudo gcloud beta firebase test android run --type robo --app app/build/outputs/apk/debug/app-debug.apk --device model=Nexus9,version=25 --device model=Nexus6,version=25 --robo-script ${HOME}/robo-script.json
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
