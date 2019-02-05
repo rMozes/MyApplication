@@ -31,6 +31,12 @@ jobs:
         path: app/build/outputs/apk/debug
         destination: apk
     - run:
+        name: Run Test APK
+        command: ./gradlew assembleAndroidTest assemble
+    - store_artifacts:
+        path: app/build/outputs/apk/test
+        destination: apk
+    - run:
         name: Decode firebase client-secret.json
         command: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/client-secret.json
     - run:
@@ -43,11 +49,8 @@ jobs:
         name: Set firebase project
         command: sudo gcloud beta config set project testlab-4372f
     - run:
-        name: Setup robo-script 1
+        name: Setup robo-script
         command: echo $ROBO_TEST | base64 --decode > ${HOME}/robo-script.json
-    - run:
-        name: Setup robo-script 1
-        command: echo $ROBO_TEST | base64 --decode > ${HOME}/robo-script_second.json
     - run:
         name: Setup arg.yaml file
         command: echo $ARG | base64 --decode > ${HOME}/args.yaml
