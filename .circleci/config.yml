@@ -34,7 +34,7 @@ jobs:
         name: Run Test APK
         command: ./gradlew assembleAndroidTest
     - store_artifacts:
-        path: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+        path: app/build/outputs/apk/androidTest/debug
         destination: apk
     - run:
         name: Decode firebase client-secret.json
