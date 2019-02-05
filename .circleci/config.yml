@@ -53,7 +53,7 @@ jobs:
         command: echo $ARG | base64 --decode > ${HOME}/args.yaml
     - run:
         name: Starting robo test
-        command: sudo gcloud beta firebase test android run args.yaml:quick-robo-test
+        command: sudo gcloud beta firebase test android run ${HOME}/args.yaml:quick-robo-test
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
