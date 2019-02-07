@@ -26,7 +26,8 @@ jobs:
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
         command: |
-          echo date +%s
+          DATE=`date +%s` |
+          echo ${DATE}
     - run:
         command: echo ${MY_ENV_VAR}
     - run:
