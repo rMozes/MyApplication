@@ -25,6 +25,14 @@ jobs:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
+        name: Set up date
+        command: |
+          DATENOW=`date` |
+          echo 'export NOW_TIME=$DATENOW' >> $BASH_ENV
+    - run:
+        name: Show date
+        command: echo ${NOW_TIME}
+    - run:
         name: Run Staging
         command: ./gradlew assembleDebug
     - store_artifacts:
@@ -48,14 +56,6 @@ jobs:
     - run:
         name: Set firebase project
         command: sudo gcloud beta config set project testlab-4372f
-    - run:
-        name: Set up date
-        command: |
-          DATENOW=`date` |
-          echo 'export NOW_TIME=$DATENOW' >> $BASH_ENV
-    - run:
-        name: Show date
-        command: echo ${NOW_TIME}
     - run:
         name: Starting robo test
         command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus9,version=25 --device model=Nexus6,version=25 --timeout 1m --async
