@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
         }
+
         false
     }
 
