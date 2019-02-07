@@ -25,13 +25,10 @@ jobs:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
-        name: Set up date
         command: |
-          DATENOW=`date` |
-          echo 'export NOW_TIME=$DATENOW' >> $BASH_ENV
+          echo 'export MY_ENV_VAR="FOO"' >> $BASH_ENV
     - run:
-        name: Show date
-        command: echo ${NOW_TIME}
+        command: echo ${MY_ENV_VAR}
     - run:
         name: Run Staging
         command: ./gradlew assembleDebug
