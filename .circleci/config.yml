@@ -55,7 +55,7 @@ jobs:
           echo 'export NOW_TIME=$DATENOW' >> $BASH_ENV
     - run:
         name: Show date
-        command: echo $NOW_TIME
+        command: echo ${NOW_TIME}
     - run:
         name: Starting robo test
         command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus9,version=25 --device model=Nexus6,version=25 --timeout 1m --async
