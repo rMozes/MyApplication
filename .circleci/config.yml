@@ -51,7 +51,7 @@ jobs:
     - run:
         name: Set up date
         command: |
-          DATENOW=`date`
+          DATENOW=`date` |
           echo 'export NOW_TIME=$DATENOW' >> $BASH_ENV
     - run:
         name: Show date
