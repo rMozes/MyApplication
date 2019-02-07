@@ -49,11 +49,13 @@ jobs:
         name: Set firebase project
         command: sudo gcloud beta config set project testlab-4372f
     - run:
-        name: Setup robo-script
-        command: echo $ROBO_TEST | base64 --decode > ${HOME}/robo-script.json
+        name: Set up date
+        command: |
+          DATENOW=`date`
+          echo 'export NOW_TIME=$DATENOW' >> $BASH_ENV
     - run:
-        name: Setup arg.yaml file
-        command: echo $ARG | base64 --decode > ${HOME}/args.yaml
+        name: Show date
+        command: echo $NOW_TIME
     - run:
         name: Starting robo test
         command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus9,version=25 --device model=Nexus6,version=25 --timeout 1m --async
