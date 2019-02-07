@@ -56,7 +56,7 @@ jobs:
         command: echo $ARG | base64 --decode > ${HOME}/args.yaml
     - run:
         name: Starting robo test
-        command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus9,version=25 --device model=Nexus6,version=25 --timeout 1m
+        command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus9,version=25 --device model=Nexus6,version=25 --timeout 1m --async
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
