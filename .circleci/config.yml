@@ -28,6 +28,7 @@ jobs:
         command: |
           DATE=`date +%s`
           echo ${DATE}
+          echo 'export MY_ENV_VAR=${DATE}' >> $BASH_ENV
     - run:
         command: echo ${MY_ENV_VAR}
     - run:
