@@ -29,9 +29,9 @@ jobs:
           DATE=`date +%s`
           echo ${DATE}
           MY_VARIABLE="Foo"
-          echo 'export ${MY_VARIABLE}' >> $BASH_ENV
+          echo 'export MY_ENV=${MY_VARIABLE}' >> $BASH_ENV
     - run:
-        command: echo ${MY_VARIABLE}
+        command: echo ${MY_ENV}
     - run:
         name: Run Staging
         command: ./gradlew assembleDebug
