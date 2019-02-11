@@ -28,9 +28,9 @@ jobs:
         command: |
           DATE=`date +%s`
           echo ${DATE}
-          echo 'export MY_ENV_VAR=${DATE}' >> $BASH_ENV
+          echo 'export DATE' >> $BASH_ENV
     - run:
-        command: echo ${MY_ENV_VAR}
+        command: echo ${DATE}
     - run:
         name: Run Staging
         command: ./gradlew assembleDebug
@@ -57,7 +57,7 @@ jobs:
         command: sudo gcloud beta config set project testlab-4372f
     - run:
         name: Starting robo test
-        command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus9,version=25 --device model=Nexus6,version=25 --timeout 1m --async
+        command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m --async
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
