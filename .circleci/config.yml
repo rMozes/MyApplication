@@ -57,16 +57,16 @@ jobs:
     - run:
         name: Starting robo test
         command: |
-          if [ $(($TL_TEST_DATE != `date +%d`)) ];
+          if [ $TL_TEST_DATE == null || $TL_TEST_DATE != `date +%d` ];
             then
               echo 'export TL_TEST_COUNT=0' >> $BASH_ENV
             fi
 
-          if [ $(($TL_TEST_COUNT >= 10)) ];
+          if [ $TL_TEST_COUNT != null && $TL_TEST_COUNT >= 10 ];
             then
               echo "TestLab test count reached the limit"
             else
-              if [ $(($PREVIOUS_TEST_HOUR == `date +%H`)) ];
+              if [ $PREVIOUS_TEST_HOUR != null && $PREVIOUS_TEST_HOUR == `date +%H` ];
                 then
                   echo "TestLab robo won't run because the previous test happened no long ago"
                 else
