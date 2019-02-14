@@ -25,10 +25,8 @@ jobs:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
+        run:
         command: |
-          DATE=`date +%s`
-          echo ${DATE}
-          MY_VARIABLE="Foo"
           echo 'export MY_ENV=`date +%s`' >> $BASH_ENV
     - run:
         command: echo ${MY_ENV}
@@ -58,7 +56,29 @@ jobs:
         command: sudo gcloud beta config set project testlab-4372f
     - run:
         name: Starting robo test
-        command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m --async
+        command: |
+          if [$TL_TEST_DATE != `date +d`];
+            then
+              echo 'export TL_TEST_COUNT=0' >> $BASH_ENV
+            fi
+
+          if [ $TL_TEST_COUNT >= 10 ];
+            then
+              echo "TestLab test count reached the limit"
+            else
+              if [ $PREVIOUS_TEST_HOUR ==  `date +%H`];
+                then
+                  echo "TestLab robo won't run because the previous test happened no long ago"
+                else
+                  echo 'export PREVIOUS_TEST_HOUR=`date +%H`' >> $BASH_ENV
+                  echo 'export TL_TEST_COUNT=$(($TL_TEST_COUNT+1))' >> $BASH_ENV
+                  echo 'export TL_TEST_DATE=`date +%d`' >> $BASH_ENV
+                  echo $PREVIOUS_TEST_HOUR
+                  echo $TL_TEST_COUNT
+                  echo $TL_TEST_DATE
+                  sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m --async
+                fi
+            fi
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
