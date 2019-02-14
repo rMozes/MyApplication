@@ -25,9 +25,10 @@ jobs:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
+        command: echo ${MY_ENV}
+    - run:
         run:
         command: |
-          echo ${MY_ENV}
           echo 'export MY_ENV=`date +%s`' >> $BASH_ENV
     - run:
         command: echo ${MY_ENV}
