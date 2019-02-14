@@ -57,7 +57,7 @@ jobs:
     - run:
         name: Starting robo test
         command: |
-          if [$TL_TEST_DATE != `date +d`];
+          if [$TL_TEST_DATE != `date +%d`];
             then
               echo 'export TL_TEST_COUNT=0' >> $BASH_ENV
             fi
