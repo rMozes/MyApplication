@@ -57,9 +57,10 @@ jobs:
     - run:
         name: Starting robo test
         command: |
-          if [ $TL_TEST_DATE == null || $TL_TEST_DATE != `date +%d` ];
+          if [ ${TL_TEST_DATE} == null || $TL_TEST_DATE != `date +%d` ];
             then
               echo 'export TL_TEST_COUNT=0' >> $BASH_ENV
+              echo ${TL_TEST_COUNT}
             fi
 
           if [ $TL_TEST_COUNT != null && $TL_TEST_COUNT >= 10 ];
@@ -70,6 +71,7 @@ jobs:
                 then
                   echo "TestLab robo won't run because the previous test happened no long ago"
                 else
+                  echo "Starting the test"
                   echo 'export PREVIOUS_TEST_HOUR=`date +%H`' >> $BASH_ENV
                   echo 'export TL_TEST_COUNT=$(($TL_TEST_COUNT+1))' >> $BASH_ENV
                   echo 'export TL_TEST_DATE=`date +%d`' >> $BASH_ENV
