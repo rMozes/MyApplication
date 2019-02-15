@@ -24,6 +24,8 @@ jobs:
         paths:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    - attach_workspace:
+        at: ~/code
     - run:
         name:  Create directory
         command: mkdir -p workspace
