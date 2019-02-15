@@ -27,11 +27,12 @@ jobs:
     - run:
         name:  Create directory
         command: mkdir -p workspace
+    - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>workspace/new-env-vars
     - run: cat workspace/new-env-vars >> $BASH_ENV
     - run:
         command: echo ${MY_ENV}
     - run:
-        run:
+        name: Export envVariable
         command: |
           echo 'export MY_ENV=`date +%s`' >> workspace/new-env-vars
     - run: cat workspace/new-env-vars >> $BASH_ENV
