@@ -24,11 +24,11 @@ jobs:
         paths:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-    - attach_workspace:
-        at: /root/code
     - run:
         name:  Create directory
         command: mkdir -p workspace
+    - attach_workspace:
+        at: ~/code
     - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>workspace/new-env-vars
     - run: cat workspace/new-env-vars >> $BASH_ENV
     - run:
@@ -39,7 +39,7 @@ jobs:
           echo 'export MY_ENV=`date +%s`' >> workspace/new-env-vars
     - run: cat workspace/new-env-vars >> $BASH_ENV
     - persist_to_workspace:
-        root: /root/code/workspace
+        root: ~/code/workspace
         paths: new-env-vars
     - run:
         command: echo ${MY_ENV}
