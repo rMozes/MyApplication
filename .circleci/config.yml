@@ -28,7 +28,7 @@ jobs:
         name:  Create directory
         command: mkdir -p workspace
     - attach_workspace:
-        at: ~/code
+        at: ~/code/workspace
     - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>workspace/new-env-vars
     - run: cat workspace/new-env-vars >> $BASH_ENV
     - run:
