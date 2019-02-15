@@ -25,11 +25,16 @@ jobs:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
     - run:
+        name:  Create directory
+        command: mkdir -p workspace
+    - run: cat workspace/new-env-vars >> $BASH_ENV
+    - run:
         command: echo ${MY_ENV}
     - run:
         run:
         command: |
-          echo 'export MY_ENV=`date +%s`' >> $BASH_ENV
+          echo 'export MY_ENV=`date +%s`' >> workspace/new-env-vars
+    - run: cat workspace/new-env-vars >> $BASH_ENV
     - run:
         command: echo ${MY_ENV}
     - run:
