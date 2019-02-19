@@ -53,6 +53,7 @@ jobs:
         command: |
           REST=$((CIRCLE_BUILD_NUM%3))
           echo "The Rest is $REST"
+          echo "CIRCLE_PREVIOUS_BUILD_NUM is $CIRCLE_PREVIOUS_BUILD_NUM"
           if [ "$REST" == "0" ];
             then
               echo "Run robo test"
