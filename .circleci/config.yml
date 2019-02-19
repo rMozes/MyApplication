@@ -58,7 +58,7 @@ jobs:
               echo "Run robo test"
               sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m
             else
-              echo "The Rest is $REST so robo test doesn't run
+              echo "The Rest is $REST so robo test doesn't run"
             fi
     - run:
         name: Run Signing Report
