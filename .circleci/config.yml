@@ -24,23 +24,6 @@ jobs:
         paths:
         - ~/.gradle
         key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-
-    - attach_workspace:
-        at: ~/code/workspace
-    - run: echo "export FOO=foo.`date +%Y%m%d.%H%M%S`" >>workspace/new-env-vars
-    - run: cat workspace/new-env-vars >> $BASH_ENV
-    - run:
-        command: echo ${MY_ENV}
-    - run:
-        name: Export envVariable
-        command: |
-          echo 'export MY_ENV=`date +%s`' >> workspace/new-env-vars
-    - run: cat workspace/new-env-vars >> $BASH_ENV
-    - persist_to_workspace:
-        root: ~/code/workspace
-        paths: new-env-vars
-    - run:
-        command: echo ${MY_ENV}
     - run:
         name: Run Staging
         command: ./gradlew assembleDebug
@@ -68,29 +51,14 @@ jobs:
     - run:
         name: Starting robo test
         command: |
-          if [ ${TL_TEST_DATE} == null || $TL_TEST_DATE != `date +%d` ];
+          REST=$((CIRCLE_BUILD_NUM%3))
+          echo "The Rest is $REST"
+          if [$REST == 0 ];
             then
-              echo 'export TL_TEST_COUNT=0' >> $BASH_ENV
-              echo ${TL_TEST_COUNT}
-            fi
-
-          if [ $TL_TEST_COUNT != null && $TL_TEST_COUNT >= 10 ];
-            then
-              echo "TestLab test count reached the limit"
+              echo "Run robo test"
+              sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m
             else
-              if [ $PREVIOUS_TEST_HOUR != null && $PREVIOUS_TEST_HOUR == `date +%H` ];
-                then
-                  echo "TestLab robo won't run because the previous test happened no long ago"
-                else
-                  echo "Starting the test"
-                  echo 'export PREVIOUS_TEST_HOUR=`date +%H`' >> $BASH_ENV
-                  echo 'export TL_TEST_COUNT=$(($TL_TEST_COUNT+1))' >> $BASH_ENV
-                  echo 'export TL_TEST_DATE=`date +%d`' >> $BASH_ENV
-                  echo $PREVIOUS_TEST_HOUR
-                  echo $TL_TEST_COUNT
-                  echo $TL_TEST_DATE
-                  sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m --async
-                fi
+              echo "The Rest is $REST so robo test doesn't run
             fi
     - run:
         name: Run Signing Report
