@@ -1,18 +1,45 @@
 version: 2
 
+defaults: &defaults
+  resource_class: large
+  working_directory: ~/code
+  docker:
+  - image: circleci/android:api-28
+  environment:
+    JVM_OPTS: -Xmx3200m
+
 jobs:
   build:
-    branches:
-      only:
-      - develop
-      - master
-      - /ci-.*/
-    resource_class: large
-    working_directory: ~/code
-    docker:
-    - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
+    <<: *defaults
+    steps:
+    - checkout
+    - restore_cache:
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+    - save_cache:
+        paths:
+        - ~/.gradle
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    - run:
+        name: Run Staging
+        command: ./gradlew assembleDebug
+    - store_artifacts:
+        path: app/build/outputs/apk/debug
+        destination: apk
+    - run:
+        name: Run Test APK
+        command: ./gradlew assembleAndroidTest
+    - store_artifacts:
+        path: app/build/outputs/apk/androidTest/debug
+        destination: apk
+    - run:
+        name: Run Signing Report
+        command: ./gradlew signingReport
+
+  build_cron:
+    <<: *defaults
     steps:
     - checkout
     - restore_cache:
@@ -50,17 +77,28 @@ jobs:
         command: sudo gcloud beta config set project testlab-4372f
     - run:
         name: Starting robo test
-        command: |
-          REST=$((CIRCLE_BUILD_NUM%3))
-          echo "The Rest is $REST"
-          echo "CIRCLE_PREVIOUS_BUILD_NUM is $CIRCLE_PREVIOUS_BUILD_NUM"
-          if [ "$REST" == "0" ];
-            then
-              echo "Run robo test"
-              sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m
-            else
-              echo "The Rest is $REST so robo test doesn't run"
-            fi
+        command: sudo gcloud beta firebase test android run --app app/build/outputs/apk/debug/app-debug.apk --type robo --device model=Nexus6,version=25 --timeout 1m
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
+
+workflows:
+  version: 2
+  simple_build:
+    jobs:
+    - build
+    filters:
+      branches:
+        only:
+        - master
+
+  minutly:
+    triggers: #use the triggers key to indicate a scheduled build
+    - schedule:
+        cron: "* * * * *" # use cron syntax to set the schedule
+        filters:
+          branches:
+            only:
+            - master
+    jobs:
+    - build_cron
