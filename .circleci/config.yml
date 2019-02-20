@@ -86,11 +86,11 @@ workflows:
   version: 2
   simple_build:
     jobs:
-    - build
-    filters:
-      branches:
-        only:
-        - master
+    - build:
+      filters:
+        branches:
+          only:
+          - master
 
   minutly:
     triggers: #use the triggers key to indicate a scheduled build
