@@ -94,7 +94,7 @@ workflows:
   minutly:
     triggers: #use the triggers key to indicate a scheduled build
     - schedule:
-        cron: "0 10,12 * * 6-7" # use cron syntax to set the schedule
+        cron: "0 10,12 * * 0,6" # use cron syntax to set the schedule
         filters:
           branches:
             only:
