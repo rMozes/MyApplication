@@ -34,5 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         message.setOnClickListener { Toast.makeText(this, "Message clicked", Toast.LENGTH_LONG).show() }
+        description.setOnClickListener { Toast.makeText(this, "Description clicked", Toast.LENGTH_LONG).show() }
     }
 }
