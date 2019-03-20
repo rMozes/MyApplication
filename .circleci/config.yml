@@ -95,7 +95,7 @@ workflows:
   version: 2
   simple_build:
     jobs:
-    - build_cron:
+    - build:
         filters:
           branches:
             only:
