@@ -37,6 +37,15 @@ jobs:
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
+    - run:
+        name: Post message to Circle.ci
+        command: |
+          export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+          curl --header "Content-Type: application/json" \
+          --header "Authorization: Bearer $SLACK_TOKEN \
+          --request POST \
+          --data '{"channel": "android-dev-int-build", "text": "Build number is: $CIRCLE_BUILD_NUM, the URL: https://circleci.com/gh/barges/purpleocean-android/$CIRCLE_BUILD_NUM,\nCommit message: -$GIT_COMMIT_DESC", "attachments": [{ "color": "#36a64f", "title": "PG-STAGING", "title_link": "https://$CIRCLE_BUILD_NUM-47702162-gh.circle-artifacts.com/0/apk/app-pg_staging-release.apk" }, { "color": "#36a64f", "title": "PG-PROD", "title_link": "https://$CIRCLE_BUILD_NUM-47702162-gh.circle-artifacts.com/0/apk/app-pg_production-release.apk"}, {"color": "#36a64f", "title": "PO-STAGING","title_link": "https://$CIRCLE_BUILD_NUM-47702162-gh.circle-artifacts.com/0/apk/app-staging-release.apk"},{"color": "#36a64f","title": "PO-PROD","title_link": "https://$CIRCLE_BUILD_NUM-47702162-gh.circle-artifacts.com/0/apk/app-production-release.apk"}]}' \
+          https://slack.com/api/chat.postMessage?channel=random
 
   build_cron:
     <<: *defaults
