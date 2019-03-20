@@ -45,7 +45,7 @@ jobs:
           curl --header "Content-Type: application/json" \
           --header "Authorization: Bearer $SLACK_TOKEN" \
           --request POST \
-          --data $DATA\
+          --data $DATA \
           https://slack.com/api/chat.postMessage?channel=random
 
   build_cron:
