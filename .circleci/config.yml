@@ -52,7 +52,7 @@ jobs:
                               \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
                           } \
                       ] \
-                  }"
+                  }" \
           https://slack.com/api/chat.postMessage?channel=random
     - run:
         name: Post message to Circle.ci
