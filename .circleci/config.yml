@@ -39,6 +39,24 @@ jobs:
         command: ./gradlew signingReport
     - run:
         name: Post message to Circle.ci
+        when: on_fail
+        command: |
+          export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+          export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
+          curl -X POST -H "header "Content-Type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" \
+          --data "{\
+                      \"channel\": \"random\",
+                      \"attachments\": [ \
+                          {
+                              \"color\": \"#f44242\", \
+                              \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
+                          } \
+                      ] \
+                  }"
+          https://slack.com/api/chat.postMessage?channel=random
+    - run:
+        name: Post message to Circle.ci
+        when: on_success
         command: |
           export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
           export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
