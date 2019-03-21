@@ -48,7 +48,7 @@ jobs:
                       \"channel\": \"random\",
                       \"attachments\": [ \
                           {
-                              \"color\": \"#f44242\", \
+                              \"color\": \"#FFFF0000\", \
                               \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
                           } \
                       ] \
