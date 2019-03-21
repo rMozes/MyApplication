@@ -41,11 +41,12 @@ jobs:
         name: Post message to Circle.ci
         command: |
           export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+          export BUILD_NUMBER=$(${CIRCLE_BUILD_NUM}+500)
           echo "{
                 \"channel\": \"random\",
                 \"attachments\": [
                 {
-                \"text\": \"Build number is: ${CIRCLE_BUILD_NUM}, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\",
+                \"text\": \"Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\",
                 \"color\": \"#36a64f\",
                 \"attachment_type\": \"default\",
                 \"actions\": [
