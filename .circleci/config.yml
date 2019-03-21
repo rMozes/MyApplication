@@ -41,7 +41,7 @@ jobs:
         name: Post message to Circle.ci
         command: |
           export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
-          export BUILD_NUMBER=${CIRCLE_BUILD_NUM}+500
+          export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
           echo "{
                 \"channel\": \"random\",
                 \"attachments\": [
