@@ -31,12 +31,13 @@ slack: &slack
         when: on_success
         command: |
           export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+          export GIT_BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
           export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
           echo "{
                 \"channel\": \"random\",
                 \"attachments\": [
                 {
-                \"text\": \"Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\",
+                \"text\": \"Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\nBranch name is: ${GIT_BRANCH_NAME} by ${CIRCLE_USERNAME}\",
                 \"color\": \"#36a64f\",
                 \"attachment_type\": \"default\",
                 \"actions\": [
