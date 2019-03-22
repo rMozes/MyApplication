@@ -8,35 +8,7 @@ defaults: &defaults
   environment:
     JVM_OPTS: -Xmx3200m
 
-jobs:
-  build:
-    <<: *defaults
-    steps:
-    - checkout
-    - restore_cache:
-        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-    - run:
-        name: Download Dependencies
-        command: ./gradlew androidDependencies
-    - save_cache:
-        paths:
-        - ~/.gradle
-        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-    - run:
-        name: Run Staging
-        command: ./gradlew assembleDebug
-    - store_artifacts:
-        path: app/build/outputs/apk/debug
-        destination: apk
-    - run:
-        name: Run Test APK
-        command: ./gradlew assembleAndroidTest
-    - store_artifacts:
-        path: app/build/outputs/apk/androidTest/debug
-        destination: apk
-    - run:
-        name: Run Signing Report
-        command: ./gradlew signingReport
+slack: &slack
     - run:
         name: Post message to Circle.ci
         when: on_fail
@@ -45,15 +17,15 @@ jobs:
           export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
           curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" \
           --data "{\
-                      \"channel\": \"random\",
-                      \"attachments\": [ \
-                          {
-                              \"color\": \"#ff0000\", \
-                              \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
-                          } \
-                      ] \
-                  }" \
-          https://slack.com/api/chat.postMessage?channel=random
+              \"channel\": \"random\",
+              \"attachments\": [ \
+                  {
+                      \"color\": \"#ff0000\", \
+                      \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
+                  } \
+              ] \
+          }" \
+      https://slack.com/api/chat.postMessage?channel=random
     - run:
         name: Post message to Circle.ci
         when: on_success
@@ -105,6 +77,38 @@ jobs:
           --request POST \
           --data "@${HOME}/json_body.json" \
           https://slack.com/api/chat.postMessage?channel=random
+
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+    - checkout
+    - restore_cache:
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+    - save_cache:
+        paths:
+        - ~/.gradle
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+    - run:
+        name: Run Staging
+        command: ./gradlew assembleDebug
+    - store_artifacts:
+        path: app/build/outputs/apk/debug
+        destination: apk
+    - run:
+        name: Run Test APK
+        command: ./gradlew assembleAndroidTest
+    - store_artifacts:
+        path: app/build/outputs/apk/androidTest/debug
+        destination: apk
+    - run:
+        name: Run Signing Report
+        command: ./gradlew signingReport
+    <<: *slack
 
   build_cron:
     <<: *defaults
