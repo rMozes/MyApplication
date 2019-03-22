@@ -8,77 +8,6 @@ defaults: &defaults
   environment:
     JVM_OPTS: -Xmx3200m
 
-slack: &slack
-    - run:
-        name: Post message to Circle.ci
-        when: on_fail
-        command: |
-          export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
-          export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
-          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" \
-          --data "{\
-              \"channel\": \"random\",
-              \"attachments\": [ \
-                  {
-                      \"color\": \"#ff0000\", \
-                      \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
-                  } \
-              ] \
-          }" \
-          https://slack.com/api/chat.postMessage?channel=random
-    - run:
-        name: Post message to Circle.ci
-        when: on_success
-        command: |
-          export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
-          export GIT_BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
-          export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
-          echo "{
-                \"channel\": \"random\",
-                \"attachments\": [
-                {
-                \"text\": \"Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\nBranch name is: ${GIT_BRANCH_NAME} by ${CIRCLE_USERNAME}\",
-                \"color\": \"#36a64f\",
-                \"attachment_type\": \"default\",
-                \"actions\": [
-                {
-                \"name\": \"PG_STAGING\",
-                \"type\": \"button\",
-                \"text\": \"PG_STAGING\",
-                \"style\": \"primary\",
-                \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-pg_staging-release.apk\"
-                },
-                {
-                \"name\": \"PG_PROD\",
-                \"type\": \"button\",
-                \"text\": \"PG_PROD\",
-                \"style\": \"primary\",
-                \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-pg_production-release.apk\"
-                },
-                {
-                \"name\": \"PO_STAGING\",
-                \"type\": \"button\",
-                \"text\": \"PO_STAGING\",
-                \"style\": \"primary\",
-                \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-staging-release.apk\"
-                },
-                {
-                \"name\": \"PO-PROD\",
-                \"type\": \"button\",
-                \"text\": \"PO-PROD\",
-                \"style\": \"primary\",
-                \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-production-release.apk\"
-                }
-                ]
-                }
-                ]
-                }" > ${HOME}/json_body.json
-          curl --header "Content-Type: application/json" \
-          --header "Authorization: Bearer $SLACK_TOKEN" \
-          --request POST \
-          --data "@${HOME}/json_body.json" \
-          https://slack.com/api/chat.postMessage?channel=random
-
 
 jobs:
   build:
@@ -109,7 +38,75 @@ jobs:
     - run:
         name: Run Signing Report
         command: ./gradlew signingReport
-    <<: *slack
+    - run:
+        name: Post message to Circle.ci
+        when: on_fail
+        command: |
+          export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+          export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
+          curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $SLACK_TOKEN" \
+          --data "{\
+          \"channel\": \"random\",
+          \"attachments\": [ \
+           {
+               \"color\": \"#ff0000\", \
+               \"text\": \"Failed: Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\" \
+           } \
+          ] \
+          }" \
+          https://slack.com/api/chat.postMessage?channel=random
+    - run:
+        name: Post message to Circle.ci
+        when: on_success
+        command: |
+              export GIT_COMMIT_DESC=$(git log --format=oneline -n 1 | sed -E 's/^[^ ]+ (.*)$/\1/g')
+              export GIT_BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
+              export BUILD_NUMBER=$((${CIRCLE_BUILD_NUM}+500))
+              echo "{
+                    \"channel\": \"random\",
+                    \"attachments\": [
+                    {
+                    \"text\": \"Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\nBranch name is: ${GIT_BRANCH_NAME} by ${CIRCLE_USERNAME}\",
+                    \"color\": \"#36a64f\",
+                    \"attachment_type\": \"default\",
+                    \"actions\": [
+                    {
+                    \"name\": \"PG_STAGING\",
+                    \"type\": \"button\",
+                    \"text\": \"PG_STAGING\",
+                    \"style\": \"primary\",
+                    \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-pg_staging-release.apk\"
+                    },
+                    {
+                    \"name\": \"PG_PROD\",
+                    \"type\": \"button\",
+                    \"text\": \"PG_PROD\",
+                    \"style\": \"primary\",
+                    \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-pg_production-release.apk\"
+                    },
+                    {
+                    \"name\": \"PO_STAGING\",
+                    \"type\": \"button\",
+                    \"text\": \"PO_STAGING\",
+                    \"style\": \"primary\",
+                    \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-staging-release.apk\"
+                    },
+                    {
+                    \"name\": \"PO-PROD\",
+                    \"type\": \"button\",
+                    \"text\": \"PO-PROD\",
+                    \"style\": \"primary\",
+                    \"url\": \"https://${CIRCLE_BUILD_NUM}-47702162-gh.circle-artifacts.com/0/apk/app-production-release.apk\"
+                    }
+                    ]
+                    }
+                    ]
+                    }" > ${HOME}/json_body.json
+              curl --header "Content-Type: application/json" \
+              --header "Authorization: Bearer $SLACK_TOKEN" \
+              --request POST \
+              --data "@${HOME}/json_body.json" \
+              https://slack.com/api/chat.postMessage?channel=random
 
   build_cron:
     <<: *defaults
