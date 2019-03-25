@@ -86,7 +86,7 @@ jobs:
                     },
                     {
                     \"title\": \"Commit\",
-                    \"value\": \"${GIT_COMMIT_DESC}",
+                    \"value\": \"${GIT_COMMIT_DESC}\",
                     \"short\": false
                     }
                     ],
