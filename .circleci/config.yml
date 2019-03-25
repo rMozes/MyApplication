@@ -66,9 +66,30 @@ jobs:
                     \"channel\": \"random\",
                     \"attachments\": [
                     {
-                    \"text\": \"Build number is: $BUILD_NUMBER, the URL: https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM},\nCommit message: ${GIT_COMMIT_DESC}\nBranch name is: ${GIT_BRANCH_NAME} by ${CIRCLE_USERNAME}\",
                     \"color\": \"#36a64f\",
                     \"attachment_type\": \"default\",
+                    \"fields\": [
+                    {
+                    \"title\": \"Success\",
+                    \"value\": \"Build number <https://circleci.com/gh/barges/purpleocean-android/${CIRCLE_BUILD_NUM}|$BUILD_NUMBER>\",
+                    \"short\": false
+                    },
+                    {
+                    \"title\": \"Branch\",
+                    \"value\": \"$GIT_BRANCH_NAME\",
+                    \"short\": true
+                    },
+                    {
+                    \"title\": \"Author\",
+                    \"value\": \"${CIRCLE_USERNAME}\",
+                    \"short\": true
+                    },
+                    {
+                    \"title\": \"Commit\",
+                    \"value\": \"${GIT_COMMIT_DESC}",
+                    \"short\": false
+                    }
+                    ],
                     \"actions\": [
                     {
                     \"name\": \"PG_STAGING\",
